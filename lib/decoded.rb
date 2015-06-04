@@ -11,12 +11,12 @@ class Decoded
     @key_creator = KeyCreator.new(@key,@date)
   end
 
-  def get_decrypt_key_values
+  def get_encrypted_key_values
       Encoded.new(@message,@key,@date).get_key_values
   end
 
-  def get_decrypted_values
-    get_decrypt_key_values.map do |group|
+  def get_decrypted_key_values
+    get_encrypted_key_values.map do |group|
       group.each_with_index.map do |x,i|
         @key_creator.module_39(x - @key_creator.key_rotation[i])
       end
@@ -24,7 +24,7 @@ class Decoded
   end
 
   def get_decrypted_keys
-    get_decrypted_values.map do |group|
+    get_decrypted_key_values.map do |group|
       group.map do |x|
         @map.key(x)
       end

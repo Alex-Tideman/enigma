@@ -1,6 +1,7 @@
 require 'minitest/autorun'
 require 'minitest/pride'
-require_relative 'decrypt'
+require_relative '../lib/decrypt'
+require_relative '../lib/encoded'
 
 class TestDecrypt < Minitest::Test
   #FOR TESTS I USED KEY 31092
@@ -14,72 +15,38 @@ class TestDecrypt < Minitest::Test
     assert_equal "t39qt0ixno2ep5i,hu3r", enigma.message
   end
 
-  def test_message_can_be_grouped
-    skip
+  def test_get_encrypted_key_values
     enigma = Decoded.new("t39qt0ixno2ep5i,hu3r", 31092, 30615)
-    grouped = [["t","r","y", " "],["t", "o", " ", "e"],["n","c","r","y"],["p","t", " ","t"],["h","i","s","."]]
-    assert_equal grouped, enigma.get_grouped_array
+    grouped = [[19, 29, 35, 16], [19, 26, 8, 23], [13, 14, 28, 4], [15, 31, 8, 38], [7, 20, 29, 17]]
+    assert_equal grouped, enigma.get_encrypted_key_values
   end
 
-  def test_date_gets_squared
-    skip
-    enigma = Decoded.new("t39qt0ixno2ep5i,hu3r", 31092, 30615)
-    assert_equal [0,2,2,5], enigma.date_squared
-  end
-
-  def test__key_rotation_is_set_with_map_and_date
-    skip
-    enigma = Decoded.new("t39qt0ixno2ep5i,hu3r", 31092, 30615)
-    assert_equal [31,12,11,97], enigma.key_rotation
-  end
-
-  def test_get_message_values
-    skip
+  def test_get_decrypted_key_values
     enigma = Decoded.new("t39qt0ixno2ep5i,hu3r", 31092, 30615)
     grouped = [[19, 17, 24, 36], [19, 14, 36, 4], [13, 2, 17, 24], [15, 19, 36, 19], [7, 8, 18, 37]]
-    assert_equal grouped, enigma.get_key_values
+    assert_equal grouped, enigma.get_decrypted_key_values
   end
 
-  def test_get_encrypted_values
-    skip
+  def test_get_decrypted_keys
     enigma = Decoded.new("t39qt0ixno2ep5i,hu3r", 31092, 30615)
-    grouped = [[11, 29, 35, 16], [11, 26, 8, 23], [5, 14, 28, 4], [7, 31, 8, 38], [38, 20, 29, 17]]
-    assert_equal grouped, enigma.get_encrypted_values
-  end
-
-  def test_get_encrypted_keys
-    skip
-    enigma = Decoded.new("t39qt0ixno2ep5i,hu3r", 31092, 30615)
-    grouped = [["l", "3", "9", "q"], ["l", "0", "i", "x"], ["f", "o", "2", "e"], ["h", "5", "i", ","], [",", "u", "3", "r"]]
-    assert_equal grouped, enigma.get_encrypted_keys
+    grouped = [["t", "r", "y", " "], ["t", "o", " ", "e"], ["n", "c", "r", "y"], ["p", "t", " ", "t"], ["h", "i", "s", "."]]
+    assert_equal grouped, enigma.get_decrypted_keys
   end
 
   def test_get_decrypted_message
-    skip
     enigma = Decoded.new("t39qt0ixno2ep5i,hu3r", 31092, 30615)
-    grouped = "l39ql0ixfo2eh5i,,u3r"
-    assert_equal grouped, enigma.get_encrypted_message
+    grouped = "try to encrypt this."
+    assert_equal grouped, enigma.get_decrypted_message
   end
 
   def test_file_reader_and_writer_works
     skip
-    enigma = Decrypt.new("message1.txt", "encrypted1.txt")
-    assert_equal "Try to encrypt this.", "message1.txt".readline
-
+    enigma = Decrypt.new(ARGV[0], ARGV[1], 31092, 30615)
     encrypted = "l39ql0ixfo2eh5i,,u3r"
+    assert_equal encrypted, ARGV[0].readline
+
+    decrypted = "try to encrypt this."
     enigma.file_reader
-    assert_equal encrypted, "encrypted1.txt".readline
-  end
-
-  def test_the_decoder_works_for_a_hardcoded_message
-    skip
-    enigma = Decoded.new("l39ql0ixfo2eh5i,,u3r")
-    assert_equal "try to encrypt this.", enigma.get_decrypted_message
-  end
-
-  def test_there_is_a_message_to_encrypt
-    skip
-    enigma = Encrypt.new("message.txt")
-    assert_equal "try to encrypt this.", enigma.file_reader
+    assert_equal decrypted, ARGV[1].readline
   end
 end

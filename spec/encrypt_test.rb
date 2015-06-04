@@ -1,11 +1,29 @@
 require 'minitest/autorun'
 require 'minitest/pride'
-require_relative 'encrypt'
-require_relative 'encoded'
+require_relative '../lib/encrypt'
+require_relative '../lib/encoded'
+require_relative '../lib/key_creator'
 
 class TestEncrypt < Minitest::Test
 
-  #FOR TESTS I USED KEY 31092
+  #TEST KEY, DATE SQUARED, AND KEY ROTATION
+  def test_key_is_a_five_digit_key
+    key = Key.new.get_key
+    assert_equal 5, key.to_s.length
+  end
+
+  def test_date_squared_returns_last_four_digits
+      date_squared = KeyCreator.new(31092, 30615).date_squared
+      assert_equal [8,2,2,5], date_squared
+  end
+
+  def test__key_rotation_is_set_with_map_and_date
+    rotation = KeyCreator.new(31092, 30615).key_rotation
+    assert_equal [39,12,11,97], rotation
+  end
+
+
+  #FOR ENCRYPT TESTS I USED KEY 31092
   def test_there_is_an_enigma_machine
     enigma = Encoded.new("Try to encrypt this.", 31092, 30615)
     assert enigma
@@ -20,16 +38,6 @@ class TestEncrypt < Minitest::Test
     enigma = Encoded.new("Try to encrypt this.", 31092, 30615)
     grouped = [["t","r","y", " "],["t", "o", " ", "e"],["n","c","r","y"],["p","t", " ","t"],["h","i","s","."]]
     assert_equal grouped, enigma.get_grouped_array
-  end
-
-  def test_date_gets_squared
-    enigma = Encoded.new("Try to encrypt this.", 31092, 30615)
-    assert_equal [8,2,2,5], enigma.date_squared
-  end
-
-  def test__key_rotation_is_set_with_map_and_date
-    enigma = Encoded.new("Try to encrypt this.", 31092, 30615)
-    assert_equal [39,12,11,97], enigma.key_rotation
   end
 
   def test_get_message_values
@@ -58,12 +66,12 @@ class TestEncrypt < Minitest::Test
 
   def test_file_reader_and_writer_works
     skip
-    enigma = Encrypt.new("message1.txt", "encrypted1.txt")
-    assert_equal "Try to encrypt this.", "message1.txt".readline
+    enigma = Encrypt.new(ARGV[0], ARGV[1])
+    assert_equal "Try to encrypt this.", ARGV[0].readline
 
     encrypted = "l39ql0ixfo2eh5i,,u3r"
     enigma.file_reader
-    assert_equal encrypted, "encrypted1.txt".readline
+    assert_equal encrypted, ARGV[1].readline
   end
 
 end
