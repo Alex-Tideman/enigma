@@ -1,4 +1,7 @@
+require 'date'
 require_relative 'encoded'
+require_relative 'key_creator'
+
 
 class Encrypt
   attr_reader :key, :date

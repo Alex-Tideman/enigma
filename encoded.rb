@@ -22,7 +22,7 @@
 #Encrypt the fourth element of the group with Final(D)
 #Repeat for all groupings of 4 in message until there is a new encrpyted message
 
-require 'date'
+require_relative 'key_creator'
 
 class Encoded
   attr_reader :message
@@ -71,25 +71,7 @@ class Encoded
         ' ' => 36,
         '.' => 37,
         ',' => 38 }
-  end
-
-  def module_39(num)
-    num % 39
-  end
-
-  def date_squared
-    squared = @date**2
-    squared_array = squared.to_s.split("").map(&:to_i)
-    date_offset = squared_array[-4..-1]
-  end
-
-  def key_rotation
-    key_array = @key.to_s.split("").map(&:to_i)
-    a = key_array[0..1].join.to_i + date_squared[0]
-    b = key_array[1..2].join.to_i + date_squared[1]
-    c = key_array[2..3].join.to_i + date_squared[2]
-    d = key_array[3..4].join.to_i + date_squared[3]
-    rotation = [a,b,c,d]
+    @key_creator = KeyCreator.new(@key,@date)
   end
 
   def get_grouped_array
@@ -112,7 +94,7 @@ class Encoded
   def get_encrypted_values
     get_key_values.map do |group|
       group.each_with_index.map do |x,i|
-        module_39(x + key_rotation[i])
+        @key_creator.module_39(x + @key_creator.key_rotation[i])
       end
     end
   end
@@ -130,16 +112,4 @@ class Encoded
   end
 end
 
-class Key
-  def get_key
-    key = []
-    1.times do
-      key << rand(1...9)
-    end
-    4.times do
-      key << rand(0...9)
-    end
-    key.join.to_i
-  end
-end
 

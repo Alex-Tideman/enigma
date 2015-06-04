@@ -1,3 +1,5 @@
+require_relative 'key_creator'
+
 class CrackDecoded
 
   def initialize(message,date)
@@ -43,17 +45,9 @@ class CrackDecoded
         ' ' => 36,
         '.' => 37,
         ',' => 38 }
+    @key_creator = KeyCreator.new(@key,@date)
   end
 
-  def module_39(num)
-    num % 39
-  end
-
-  def date_squared
-    squared = @date**2
-    squared_array = squared.to_s.split("").map(&:to_i)
-    date_offset = squared_array[-4..-1]
-  end
   #Last_array.size == 4
   #Final message: last.array = [nd..] -> [13,4,38,38]
   #Encrypted message: last.array = [w,x,y,z]
@@ -112,8 +106,8 @@ class CrackDecoded
   end
 
   def find_key
-      key = [(key_rotation[0] - date_squared[0])%39,(key_rotation[1] - date_squared[1])%39,
-             (key_rotation[2] - date_squared[2])%39,(key_rotation[3] - date_squared[3])%39].join.to_i
+      key = [(key_rotation[0] - @key_creator.date_squared[0])%39,(key_rotation[1] - @key_creator.date_squared[1])%39,
+             (key_rotation[2] - @key_creator.date_squared[2])%39,(key_rotation[3] - @key_creator.date_squared[3])%39].join.to_i
   end
 
   def get_grouped_array
@@ -136,7 +130,7 @@ class CrackDecoded
   def get_decrypted_values
     get_key_values.map do |group|
       group.each_with_index.map do |x,i|
-        module_39(x - key_rotation[i])
+        @key_creator.module_39(x - key_rotation[i])
       end
     end
   end

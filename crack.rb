@@ -1,4 +1,4 @@
-require 'date'
+
 require_relative 'crack_decoded'
 
 class Crack
