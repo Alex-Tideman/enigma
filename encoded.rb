@@ -25,7 +25,7 @@
 require_relative 'key_creator'
 
 class Encoded
-  attr_reader :message
+  attr_reader :message, :map
 
   def initialize(message,key,date)
     @message = message

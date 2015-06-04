@@ -26,9 +26,10 @@ class Encrypt
   end
 end
 
-if __FILE__ == $0
-  encrypt = Encrypt.new(ARGV[0], ARGV[1])
-  encrypt.file_reader
-  puts "Created #{ARGV[1]} with the key #{encrypt.key} and the date #{encrypt.date}."
+class Runner
+  if __FILE__ == $0
+    encrypt = Encrypt.new(ARGV[0], ARGV[1])
+    encrypt.file_reader
+    puts "Created #{ARGV[1]} with the key #{encrypt.key} and the date #{encrypt.date}."
+  end
 end
-

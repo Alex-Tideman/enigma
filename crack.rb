@@ -20,15 +20,12 @@ class Crack
     decrytped_file = File.open(@output_file, "w")
     decrytped_file.write(cipher)
   end
-
-  def get_key
-    message_file = File.open(@message, "r").readline
-    key = CrackDecoded.new(message_file.split(""),@date).find_key
-  end
 end
 
-if __FILE__ == $0
-  decrypt = Crack.new(ARGV[0], ARGV[1], ARGV[2].to_i)
-  decrypt.file_reader
-  puts "Created #{ARGV[1]} with the cracked key #{decrypt.get_key} and the date #{decrypt.date}"
+class Runner
+  if __FILE__ == $0
+    decrypt = Crack.new(ARGV[0], ARGV[1], ARGV[2].to_i)
+    decrypt.file_reader
+    puts "Created #{ARGV[1]} on the date #{decrypt.date}"
+  end
 end
